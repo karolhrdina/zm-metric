@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_metric_snmp - agent for getting measurements using LUA and SNMP
+    zm_metric_snmp - agent for getting measurements using LUA and SNMP
 
     Copyright (C) 2016 - 2017 Tomas Halman                                 
                                                                            
@@ -21,17 +21,17 @@
 
 /*
 @header
-    fty_metric_snmp - agent for getting measurements using LUA and SNMP
+    zm_metric_snmp - agent for getting measurements using LUA and SNMP
 @discuss
 @end
 */
 
-#include "fty_metric_snmp_classes.h"
+#include "zm_metric_snmp_classes.h"
 
-static const char *ACTOR_NAME = "fty-metric-smtp";
+static const char *ACTOR_NAME = "zm-metric-smtp";
 static const char *ENDPOINT = "ipc://@/malamute";
 static const char *RULES_DIR = "./rules";
-static const char *SNMP_CONFIG_FILE = "/etc/sysconfig/fty.cfg";
+static const char *SNMP_CONFIG_FILE = "/etc/sysconfig/zm.cfg";
 static int POLLING = 60;
 
 static int
@@ -50,11 +50,11 @@ int main (int argc, char *argv [])
         if (argn < argc - 1) param = argv [argn+1];
 
         if (streq (argv [argn], "--help") ||  streq (argv [argn], "-h")) {
-            puts ("fty-metric-snmp [options] ...");
+            puts ("zm-metric-snmp [options] ...");
             puts ("  --verbose / -v         verbose test output");
             puts ("  --help / -h            this information");
             puts ("  --endpoint / -e        malamute endpoint [ipc://@/malamute]");
-            puts ("  --snmpconfig / -c      config file with SNMP communities [/etc/sysconfig/fty.cfg]");
+            puts ("  --snmpconfig / -c      config file with SNMP communities [/etc/sysconfig/zm.cfg]");
             puts ("  --rules / -r           directory with rules [./rules]");
             puts ("  --polling / -p         polling interval in seconds [60]");
             return 0;
@@ -92,12 +92,12 @@ int main (int argc, char *argv [])
         }
     }
     if (verbose)
-        zsys_info ("fty_metric_snmp - started");
-    zactor_t *server = zactor_new (fty_metric_snmp_server_actor, NULL);
+        zsys_info ("zm_metric_snmp - started");
+    zactor_t *server = zactor_new (zm_metric_server_actor, NULL);
     assert (server);
     zstr_sendx (server, "BIND", ENDPOINT, ACTOR_NAME, NULL);
-    zstr_sendx (server, "PRODUCER", FTY_PROTO_STREAM_METRICS, NULL);
-    zstr_sendx (server, "CONSUMER", FTY_PROTO_STREAM_ASSETS, ".*", NULL);
+    zstr_sendx (server, "PRODUCER", ZM_PROTO_STREAM_METRICS, NULL);
+    zstr_sendx (server, "CONSUMER", ZM_PROTO_STREAM_ASSETS, ".*", NULL);
     zstr_sendx (server, "LOADRULES", RULES_DIR, NULL);
     zstr_sendx (server, "LOADCREDENTIALS", SNMP_CONFIG_FILE, NULL);
     // ttl = 2.5 * POLLING
@@ -119,6 +119,6 @@ int main (int argc, char *argv [])
     zloop_destroy (&wakeup);
     zactor_destroy (&server);
     if (verbose)
-        zsys_info ("fty_metric_snmp - exited");
+        zsys_info ("zm_metric_snmp - exited");
     return 0;
 }

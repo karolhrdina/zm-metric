@@ -1,0 +1,5 @@
+usr/include/*
+usr/lib/*/libzm_metric.so
+usr/lib/*/pkgconfig/libzm_metric.pc
+usr/share/man/man3/*
+usr/share/man/man7/*

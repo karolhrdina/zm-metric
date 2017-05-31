@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_metric_snmp_classes - private header file
+    zm_metric_classes - private header file
 
     Copyright (C) 2016 - 2017 Tomas Halman                                 
                                                                            
@@ -23,14 +23,14 @@
     =========================================================================
 */
 
-#ifndef FTY_METRIC_SNMP_CLASSES_H_INCLUDED
-#define FTY_METRIC_SNMP_CLASSES_H_INCLUDED
+#ifndef ZM_METRIC_CLASSES_H_INCLUDED
+#define ZM_METRIC_CLASSES_H_INCLUDED
 
 //  Platform definitions, must come first
 #include "platform.h"
 
 //  External API
-#include "../include/fty_metric_snmp.h"
+#include "../include/zm_metric.h"
 
 //  Extra headers
 
@@ -51,9 +51,9 @@ typedef struct _vsjson_t vsjson_t;
 typedef struct _host_actor_t host_actor_t;
 #define HOST_ACTOR_T_DEFINED
 #endif
-#ifndef FTYSNMP_T_DEFINED
-typedef struct _ftysnmp_t ftysnmp_t;
-#define FTYSNMP_T_DEFINED
+#ifndef ZMSNMP_T_DEFINED
+typedef struct _zmsnmp_t zmsnmp_t;
+#define ZMSNMP_T_DEFINED
 #endif
 #ifndef CREDENTIALS_T_DEFINED
 typedef struct _credentials_t credentials_t;
@@ -65,46 +65,46 @@ typedef struct _credentials_t credentials_t;
 #include "rule.h"
 #include "vsjson.h"
 #include "host_actor.h"
-#include "ftysnmp.h"
+#include "zmsnmp.h"
 #include "credentials.h"
 
 //  *** To avoid double-definitions, only define if building without draft ***
-#ifndef FTY_METRIC_SNMP_BUILD_DRAFT_API
+#ifndef ZM_METRIC_BUILD_DRAFT_API
 
 //  *** Draft method, defined for internal use only ***
 //  Self test of this class.
-FTY_METRIC_SNMP_PRIVATE void
+ZM_METRIC_PRIVATE void
     luasnmp_test (bool verbose);
 
 //  *** Draft method, defined for internal use only ***
 //  Self test of this class.
-FTY_METRIC_SNMP_PRIVATE void
+ZM_METRIC_PRIVATE void
     rule_test (bool verbose);
 
 //  *** Draft method, defined for internal use only ***
 //  Self test of this class.
-FTY_METRIC_SNMP_PRIVATE void
+ZM_METRIC_PRIVATE void
     vsjson_test (bool verbose);
 
 //  *** Draft method, defined for internal use only ***
 //  Self test of this class.
-FTY_METRIC_SNMP_PRIVATE void
+ZM_METRIC_PRIVATE void
     host_actor_test (bool verbose);
 
 //  *** Draft method, defined for internal use only ***
 //  Self test of this class.
-FTY_METRIC_SNMP_PRIVATE void
-    ftysnmp_test (bool verbose);
+ZM_METRIC_PRIVATE void
+    zmsnmp_test (bool verbose);
 
 //  *** Draft method, defined for internal use only ***
 //  Self test of this class.
-FTY_METRIC_SNMP_PRIVATE void
+ZM_METRIC_PRIVATE void
     credentials_test (bool verbose);
 
 //  Self test for private classes
-FTY_METRIC_SNMP_PRIVATE void
-    fty_metric_snmp_private_selftest (bool verbose);
+ZM_METRIC_PRIVATE void
+    zm_metric_private_selftest (bool verbose);
 
-#endif // FTY_METRIC_SNMP_BUILD_DRAFT_API
+#endif // ZM_METRIC_BUILD_DRAFT_API
 
 #endif

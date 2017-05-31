@@ -26,7 +26,7 @@
 @end
 */
 
-#include "fty_metric_snmp_classes.h"
+#include "zm_metric_classes.h"
 #include "host_actor.h"
 #include "credentials.h"
 #include "luasnmp.h"

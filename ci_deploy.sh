@@ -11,7 +11,7 @@ set -e
 if [ "$BUILD_TYPE" == "default" ]; then
     # Tell travis to deploy all files in dist
     mkdir dist
-    export FTY_METRIC_SNMP_DEPLOYMENT=dist/*
+    export ZM_METRIC_DEPLOYMENT=dist/*
     # Move archives to dist
     mv *.tar.gz dist
     mv *.zip dist
@@ -22,8 +22,8 @@ if [ "$BUILD_TYPE" == "default" ]; then
     cd -
 elif [ "$BUILD_TYPE" == "bindings" ] && [ "$BINDING" == "jni" ]; then
     ( cd bindings/jni && TERM=dumb PKG_CONFIG_PATH=/tmp/lib/pkgconfig ./gradlew clean bintrayUpload )
-    cp bindings/jni/android/fty_metric_snmp-android.jar fty_metric_snmp-android-1.0.0.jar
-    export FTY_METRIC_SNMP_DEPLOYMENT=fty_metric_snmp-android-1.0.0.jar
+    cp bindings/jni/android/zm_metric-android.jar zm_metric-android-1.0.0.jar
+    export ZM_METRIC_DEPLOYMENT=zm_metric-android-1.0.0.jar
 else
-    export FTY_METRIC_SNMP_DEPLOYMENT=""
+    export ZM_METRIC_DEPLOYMENT=""
 fi

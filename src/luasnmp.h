@@ -22,7 +22,7 @@
 #ifndef LUASNMP_H_INCLUDED
 #define LUASNMP_H_INCLUDED
 
-#include "fty_metric_snmp_classes.h"
+#include "zm_metric_classes.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,15 +30,15 @@ extern "C" {
 
 //  @interface
 //  Create a new lua state with SNMP support
-FTY_METRIC_SNMP_EXPORT lua_State *
+ZM_METRIC_EXPORT lua_State *
     luasnmp_new (void);
 
 // Destroy luasnmp
-FTY_METRIC_SNMP_EXPORT void
+ZM_METRIC_EXPORT void
     luasnmp_destroy (lua_State **self_p);
 
 //  Self test of this class
-FTY_METRIC_SNMP_EXPORT void
+ZM_METRIC_EXPORT void
     luasnmp_test (bool verbose);
 
 //  @end

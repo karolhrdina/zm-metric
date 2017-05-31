@@ -36,7 +36,7 @@
 
 void luasnmp_init()
 {
-    init_snmp("fty-snmp-client");
+    init_snmp("zm-snmp-client");
 }
 
 //  --------------------------------------------------------------------------
@@ -64,7 +64,7 @@ static int lua_snmp_get(lua_State *L)
     if (! credentials.community || (credentials.version < 1)) {
         return 0;
     }
-    char *result = ftysnmp_get (host, oid, &credentials);
+    char *result = zmsnmp_get (host, oid, &credentials);
     if (result) {
         lua_pushstring (L, result);
         free (result);
@@ -100,7 +100,7 @@ static int lua_snmp_getnext(lua_State *L)
     }
 
     char *nextoid, *nextvalue;
-    ftysnmp_getnext (host, oid, &credentials, &nextoid, &nextvalue);
+    zmsnmp_getnext (host, oid, &credentials, &nextoid, &nextvalue);
     if (nextoid && nextvalue) {
         lua_pushstring (L, nextoid);
         lua_pushstring (L, nextvalue);

@@ -1,5 +1,5 @@
 #
-#    fty-metric-snmp - agent for getting measurements using LUA and SNMP
+#    zm-metric - agent for getting measurements using LUA and SNMP
 #
 #    Copyright (C) 2016 - 2017 Tomas Halman                                 
 #                                                                           
@@ -17,17 +17,17 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.            
 
-Source:         fty-metric-snmp
+Source:         zm-metric
 Section:        net
 Priority:       optional
-Maintainer:     fty-metric-snmp Developers <email@hostname.com>
+Maintainer:     zm-metric Developers <email@hostname.com>
 Standards-Version: 3.9.7
 Build-Depends: debhelper (>= 9),
     pkg-config,
     libzmq3-dev,
     libczmq-dev,
     libmlm-dev,
-    libfty-proto-dev,
+    libzm-proto-dev,
     liblua5.1-0-dev,
     libsnmp-dev,
     systemd,
@@ -35,39 +35,39 @@ Build-Depends: debhelper (>= 9),
     asciidoc-base | asciidoc, xmlto,
     dh-autoreconf
 
-Package: libfty-metric-snmp0
+Package: libzm-metric0
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: agent for getting measurements using lua and snmp shared library
- This package contains shared library for fty-metric-snmp: agent for getting measurements using lua and snmp
+ This package contains shared library for zm-metric: agent for getting measurements using lua and snmp
 
-Package: libfty-metric-snmp-dev
+Package: libzm-metric-dev
 Architecture: any
 Section: libdevel
 Depends:
     libzmq3-dev,
     libczmq-dev,
     libmlm-dev,
-    libfty-proto-dev,
+    libzm-proto-dev,
     liblua5.1-0-dev,
     libsnmp-dev,
-    libfty-metric-snmp0 (= ${binary:Version})
+    libzm-metric0 (= ${binary:Version})
 Description: agent for getting measurements using lua and snmp development tools
- This package contains development files for fty-metric-snmp: agent for getting measurements using lua and snmp
+ This package contains development files for zm-metric: agent for getting measurements using lua and snmp
 
-Package: fty-metric-snmp
+Package: zm-metric
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends},
 Description: agent for getting measurements using lua and snmp
- Main package for fty-metric-snmp: agent for getting measurements using lua and snmp
+ Main package for zm-metric: agent for getting measurements using lua and snmp
 
-Package: fty-metric-snmp-dbg
+Package: zm-metric-dbg
 Architecture: any
 Section: debug
 Priority: extra
 Depends:
-    fty-metric-snmp (= ${binary:Version}),
+    zm-metric (= ${binary:Version}),
     ${misc:Depends}
 Description: agent for getting measurements using lua and snmp debugging symbols
- This package contains the debugging symbols for fty-metric-snmp : agent for getting measurements using lua and snmp.
+ This package contains the debugging symbols for zm-metric : agent for getting measurements using lua and snmp.
 

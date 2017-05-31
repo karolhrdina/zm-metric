@@ -1,7 +1,7 @@
 /*  =========================================================================
-    fty-metric-snmp - PoC 'snmp-get' server reading.
+    zm-metric - agent for getting measurements using LUA and SNMP
 
-    Copyright (C) 2014 - 2015 Eaton                                        
+    Copyright (C) 2016 - 2017 Tomas Halman                                 
                                                                            
     This program is free software; you can redistribute it and/or modify   
     it under the terms of the GNU General Public License as published by   
@@ -19,11 +19,11 @@
     =========================================================================
 */
 
-#ifndef FTY_METRIC_SNMP_H_H_INCLUDED
-#define FTY_METRIC_SNMP_H_H_INCLUDED
+#ifndef ZM_METRIC_H_H_INCLUDED
+#define ZM_METRIC_H_H_INCLUDED
 
 //  Include the project library file
-#include "fty_metric_snmp_library.h"
+#include "zm_metric_library.h"
 
 //  Add your own public definitions here, if you need them
 

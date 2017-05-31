@@ -1,0 +1,7 @@
+usr/bin/zm-metric
+usr/share/man/man1/zm-metric.1
+usr/bin/zm-metric-rule
+usr/share/man/man1/zm-metric-rule.1
+etc/zm-metric/zm-metric.cfg
+lib/systemd/system/zm-metric.service
+

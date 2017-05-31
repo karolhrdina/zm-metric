@@ -1,5 +1,5 @@
 <project
-    name = "fty-metric-snmp"
+    name = "zm-metric"
     description = "agent for getting measurements using LUA and SNMP"
     script = "zproject.gsl"
     >
@@ -15,10 +15,10 @@
         repository="https://github.com/42ity/czmq.git"/>
     <use project = "malamute" min_major = "1" />
 
-    <use project = "fty-proto" libname = "libfty_proto" prefix="ftyproto"
+    <use project = "zm-proto" libname = "libzm_proto" prefix="zmproto"
         min_major = "0" min_minor = "0" min_patch = "0"
-        repository = "https://github.com/42ity/fty-proto"
-        test = "fty_proto_test">
+        repository = "https://github.com/42ity/zm-proto"
+        test = "zm_proto_test">
         <use project = "malamute" />
     </use>
 
@@ -35,11 +35,11 @@
     <class name = "rule" private = "1">class representing one rule</class>
     <class name = "vsjson" private = "1">JSON parser</class>
     <class name = "host_actor" private = "1">Actor monitoring one host</class>
-    <class name = "ftysnmp" private = "1">basic snmp functions</class>
+    <class name = "zmsnmp" private = "1">basic snmp functions</class>
     <class name = "credentials" private = "1">list of snmp credentials</class>
-    <class name = "fty_metric_snmp_server" state = "stable">Main actor</class>
+    <class name = "zm_metric_server" state = "stable">Main actor</class>
     <class name = "rule_tester" state = "stable">Class for testing rule file</class>
 
-    <main name = "fty-metric-snmp" service = "1" />
-    <main name = "fty-metric-snmp-rule" />
+    <main name = "zm-metric" service = "1" />
+    <main name = "zm-metric-rule" />
 </project>

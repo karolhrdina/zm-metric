@@ -1,5 +1,5 @@
 /*  =========================================================================
-    snmp - basic snmp functions
+    zm_metric_server - Main actor
 
     Copyright (C) 2016 - 2017 Tomas Halman                                 
                                                                            
@@ -19,33 +19,25 @@
     =========================================================================
 */
 
-#ifndef FTYSNMP_H_INCLUDED
-#define FTYSNMP_H_INCLUDED
+#ifndef ZM_METRIC_SERVER_H_INCLUDED
+#define ZM_METRIC_SERVER_H_INCLUDED
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-//  structure for keeping SNMP credentials of any version
-#ifndef SNMP_CREDENTIALS_T_DEFINED
-typedef struct _snmp_credentials_t {
-    int version;
-    char *community;
-} snmp_credentials_t;
-#define SNMP_CREDENTIALS_T_DEFINED
-#endif
-
 //  @interface
-//  snmp get function
-FTY_METRIC_SNMP_PRIVATE char *
-    ftysnmp_get (const char* host, const char *oid, const snmp_credentials_t *credentials);
+//  Create a new zm_metric_server
+ZM_METRIC_EXPORT zm_metric_server_t *
+    zm_metric_server_new (void);
 
-//  snmp getnext function
-FTY_METRIC_SNMP_PRIVATE void
-    ftysnmp_getnext (const char* host, const char *oid, const snmp_credentials_t *credentials, char **resultoid, char **resultvalue);
+//  Destroy the zm_metric_server
+ZM_METRIC_EXPORT void
+    zm_metric_server_destroy (zm_metric_server_t **self_p);
 
-FTY_METRIC_SNMP_PRIVATE void
-    ftysnmp_test (bool verbose);
+//  Self test of this class
+ZM_METRIC_EXPORT void
+    zm_metric_server_test (bool verbose);
 
 //  @end
 

@@ -1,15 +1,15 @@
 Format: 3.0 (quilt)
-Binary: fty-metric-snmp
-Source: fty-metric-snmp
+Binary: zm-metric
+Source: zm-metric
 Version: 1.0.0
-Maintainer: fty-metric-snmp Developers <email@hostname.com>
+Maintainer: zm-metric Developers <email@hostname.com>
 Architecture: any
 Build-Depends: debhelper (>= 9),
     pkg-config,
     libzmq3-dev,
     libczmq-dev,
     libmlm-dev,
-    libfty-proto-dev,
+    libzm-proto-dev,
     liblua5.1-0-dev,
     libsnmp-dev,
     systemd,
@@ -18,4 +18,4 @@ Build-Depends: debhelper (>= 9),
     dh-autoreconf
 
 Files:
- 7697688bf65a35bc33ae2db51ebb0e3b 818110 fty-metric-snmp.tar.gz
+ 7697688bf65a35bc33ae2db51ebb0e3b 818110 zm-metric.tar.gz

@@ -33,26 +33,26 @@ typedef struct _host_actor_t host_actor_t;
 
 //  @interface
 //  host actor function
-FTY_METRIC_SNMP_EXPORT void
+ZM_METRIC_EXPORT void
     host_actor (zsock_t *pipe, void *args);
 
 //  Self test of this class
-FTY_METRIC_SNMP_EXPORT void
+ZM_METRIC_EXPORT void
     host_actor_test (bool verbose);
 
-FTY_METRIC_SNMP_EXPORT host_actor_t *
+ZM_METRIC_EXPORT host_actor_t *
     host_actor_new ();
 
-FTY_METRIC_SNMP_EXPORT void
+ZM_METRIC_EXPORT void
     host_actor_destroy (host_actor_t **self_p);
 
-FTY_METRIC_SNMP_EXPORT void
+ZM_METRIC_EXPORT void
     host_actor_remove_function (host_actor_t *self, const char *name);
 
-FTY_METRIC_SNMP_EXPORT void
+ZM_METRIC_EXPORT void
     host_actor_remove_functions (host_actor_t *self);
 
-FTY_METRIC_SNMP_EXPORT void
+ZM_METRIC_EXPORT void
     host_actor_freefn (void *self);
 
 //  @end

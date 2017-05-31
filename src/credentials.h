@@ -22,7 +22,7 @@
 #ifndef CREDENTIALS_H_INCLUDED
 #define CREDENTIALS_H_INCLUDED
 
-#include "fty_metric_snmp_classes.h"
+#include "zm_metric_classes.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,31 +36,31 @@ typedef struct _credentials_t credentials_t;
 
 //  @interface
 //  Create a new credentials
-FTY_METRIC_SNMP_PRIVATE credentials_t *
+ZM_METRIC_PRIVATE credentials_t *
     credentials_new (void);
 
 //  Destroy the credentials
-FTY_METRIC_SNMP_PRIVATE void
+ZM_METRIC_PRIVATE void
     credentials_destroy (credentials_t **self_p);
 
 //  Add new credentials for SNMP version 1 and 2c
-FTY_METRIC_SNMP_PRIVATE void
+ZM_METRIC_PRIVATE void
     credentials_set (credentials_t *self, int version, const char*community);
 
 //  Get first credentials in list or NULL if empty.
-FTY_METRIC_SNMP_PRIVATE const snmp_credentials_t *
+ZM_METRIC_PRIVATE const snmp_credentials_t *
     credentials_first (credentials_t *self);
 
 //  Get next credentials in list or NULL if we reached end of list.
-FTY_METRIC_SNMP_PRIVATE const snmp_credentials_t *
+ZM_METRIC_PRIVATE const snmp_credentials_t *
     credentials_next (credentials_t *self);
 
 //  Load credentials from zconfig file.
-FTY_METRIC_SNMP_PRIVATE void
+ZM_METRIC_PRIVATE void
     credentials_load (credentials_t *self, char *path);
 
 //  Self test of this class
-FTY_METRIC_SNMP_PRIVATE void
+ZM_METRIC_PRIVATE void
     credentials_test (bool verbose);
 
 //  @end

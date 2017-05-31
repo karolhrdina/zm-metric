@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_metric_snmp_rule - description
+    zm_metric_snmp_rule - description
 
     Copyright (C) 2016 - 2017 Tomas Halman                                 
                                                                            
@@ -21,12 +21,12 @@
 
 /*
 @header
-    fty_metric_snmp_rule -
+    zm_metric_snmp_rule -
 @discuss
 @end
 */
 
-#include "fty_metric_snmp_classes.h"
+#include "zm_metric_snmp_classes.h"
 
 int main (int argc, char *argv [])
 {
@@ -40,7 +40,7 @@ int main (int argc, char *argv [])
         char *param = NULL;
         if (argn < argc - 1) param = argv [argn + 1];
         if (streq (argv [argn], "--help") ||  streq (argv [argn], "-h")) {
-            puts ("fty-metric-snmp-rule [options] ...");
+            puts ("zm-metric-snmp-rule [options] ...");
             puts ("  --help / -h            this information");
             puts ("  --rule / -r            rule file");
             puts ("  --snmp-version / -s    snmp version [1], (1 or 2)");

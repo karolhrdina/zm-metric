@@ -31,7 +31,7 @@
 @end
 */
 
-#include "fty_metric_snmp_classes.h"
+#include "zm_metric_classes.h"
 
 //  Structure of credential list
 struct _credentials_t {

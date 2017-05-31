@@ -1,9 +1,9 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: fty-metric-snmp
+Upstream-Name: zm-metric
 
 Files: *
-Copyright: 2015- fty-metric-snmp Developers <email@hostname.com>
-License: fty-metric-snmp_license
+Copyright: 2015- zm-metric Developers <email@hostname.com>
+License: zm-metric_license
  Copyright (C) 2016 - 2017 Tomas Halman                                 
                                                                         
  This program is free software; you can redistribute it and/or modify   

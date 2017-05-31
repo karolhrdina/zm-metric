@@ -16,12 +16,12 @@ AM_CPPFLAGS = \
     ${libzmq_CFLAGS} \
     ${czmq_CFLAGS} \
     ${malamute_CFLAGS} \
-    ${fty_proto_CFLAGS} \
+    ${zm_proto_CFLAGS} \
     ${lua_5_1_CFLAGS} \
     ${netsnmp_CFLAGS} \
     -I$(srcdir)/include
 
-project_libs = ${libzmq_LIBS} ${czmq_LIBS} ${malamute_LIBS} ${fty_proto_LIBS} ${lua_5_1_LIBS} ${netsnmp_LIBS}
+project_libs = ${libzmq_LIBS} ${czmq_LIBS} ${malamute_LIBS} ${zm_proto_LIBS} ${lua_5_1_LIBS} ${netsnmp_LIBS}
 
 SUBDIRS = doc
 DIST_SUBDIRS = doc
@@ -42,7 +42,7 @@ EXTRA_DIST += \
     Findlibzmq.cmake \
     Findczmq.cmake \
     Findmalamute.cmake \
-    Findfty_proto.cmake \
+    Findzm_proto.cmake \
     Findlua_5_1.cmake \
     Findnetsnmp.cmake \
     CMakeLists.txt
@@ -53,11 +53,11 @@ EXTRA_DIST += \
     src/rule.h \
     src/vsjson.h \
     src/host_actor.h \
-    src/ftysnmp.h \
+    src/zmsnmp.h \
     src/credentials.h \
     LICENSE \
     README.md \
-    src/fty_metric_snmp_classes.h
+    src/zm_metric_classes.h
 
 # NOTE: this "include" syntax is not a "make" but an "autotools" keyword,
 # see https://www.gnu.org/software/automake/manual/html_node/Include.html

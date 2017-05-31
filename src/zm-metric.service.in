@@ -2,10 +2,10 @@
 # You can add hand-written code here.
 
 [Unit]
-Description=fty-metric-snmp service
+Description=zm-metric-snmp service
 Requires=network.target malamute.service
 After=network.target malamute.service
-Before=fty-asset.service
+Before=zm-asset.service
 PartOf=bios.target
 
 [Service]
@@ -14,14 +14,14 @@ User=bios
 Restart=always
 EnvironmentFile=-@prefix@/share/bios/etc/default/bios
 EnvironmentFile=-@prefix@/share/bios/etc/default/bios__%n.conf
-EnvironmentFile=-@prefix@/share/fty/etc/default/fty
-EnvironmentFile=-@prefix@/share/fty/etc/default/fty__%n.conf
+EnvironmentFile=-@prefix@/share/zm/etc/default/zm
+EnvironmentFile=-@prefix@/share/zm/etc/default/zm__%n.conf
 EnvironmentFile=-@sysconfdir@/default/bios
 EnvironmentFile=-@sysconfdir@/default/bios__%n.conf
-EnvironmentFile=-@sysconfdir@/default/fty
-EnvironmentFile=-@sysconfdir@/default/fty__%n.conf
+EnvironmentFile=-@sysconfdir@/default/zm
+EnvironmentFile=-@sysconfdir@/default/zm__%n.conf
 Environment="prefix=@prefix@"
-ExecStart=@prefix@/bin/fty-metric-snmp --rules '/var/lib/fty/fty-metric-snmp/rules'
+ExecStart=@prefix@/bin/zm-metric-snmp --rules '/var/lib/zm/zm-metric-snmp/rules'
 
 [Install]
 WantedBy=bios.target

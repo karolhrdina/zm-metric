@@ -11,14 +11,14 @@
 *.xml7
 
 # Ignore the source doc texts generated from program sources
-fty_metric_snmp_server.txt
-fty_metric_snmp_server.doc
+zm_metric_server.txt
+zm_metric_server.doc
 rule_tester.txt
 rule_tester.doc
-fty-metric-snmp.txt
-fty-metric-snmp.doc
-fty-metric-snmp-rule.txt
-fty-metric-snmp-rule.doc
+zm-metric.txt
+zm-metric.doc
+zm-metric-rule.txt
+zm-metric-rule.doc
 
 # Make sure to track the manually maintained project description
 !*.adoc

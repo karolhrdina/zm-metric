@@ -1,5 +1,5 @@
 #
-#    fty-metric-snmp - agent for getting measurements using LUA and SNMP
+#    zm-metric - agent for getting measurements using LUA and SNMP
 #
 #    Copyright (C) 2016 - 2017 Tomas Halman                                 
 #                                                                           
@@ -28,7 +28,7 @@
 %else
 %define DRAFTS no
 %endif
-Name:           fty-metric-snmp
+Name:           zm-metric
 Version:        1.0.0
 Release:        1
 Summary:        agent for getting measurements using lua and snmp
@@ -52,48 +52,48 @@ BuildRequires:  xmlto
 BuildRequires:  zeromq-devel
 BuildRequires:  czmq-devel
 BuildRequires:  malamute-devel
-BuildRequires:  fty-proto-devel
+BuildRequires:  zm-proto-devel
 BuildRequires:  lua-devel
 BuildRequires:  net-snmp-devel
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
 %description
-fty-metric-snmp agent for getting measurements using lua and snmp.
+zm-metric agent for getting measurements using lua and snmp.
 
-%package -n libfty_metric_snmp0
+%package -n libzm_metric0
 Group:          System/Libraries
 Summary:        agent for getting measurements using lua and snmp shared library
 
-%description -n libfty_metric_snmp0
-This package contains shared library for fty-metric-snmp: agent for getting measurements using lua and snmp
+%description -n libzm_metric0
+This package contains shared library for zm-metric: agent for getting measurements using lua and snmp
 
-%post -n libfty_metric_snmp0 -p /sbin/ldconfig
-%postun -n libfty_metric_snmp0 -p /sbin/ldconfig
+%post -n libzm_metric0 -p /sbin/ldconfig
+%postun -n libzm_metric0 -p /sbin/ldconfig
 
-%files -n libfty_metric_snmp0
+%files -n libzm_metric0
 %defattr(-,root,root)
-%{_libdir}/libfty_metric_snmp.so.*
+%{_libdir}/libzm_metric.so.*
 
 %package devel
 Summary:        agent for getting measurements using lua and snmp
 Group:          System/Libraries
-Requires:       libfty_metric_snmp0 = %{version}
+Requires:       libzm_metric0 = %{version}
 Requires:       zeromq-devel
 Requires:       czmq-devel
 Requires:       malamute-devel
-Requires:       fty-proto-devel
+Requires:       zm-proto-devel
 Requires:       lua-devel
 Requires:       net-snmp-devel
 
 %description devel
 agent for getting measurements using lua and snmp development tools
-This package contains development files for fty-metric-snmp: agent for getting measurements using lua and snmp
+This package contains development files for zm-metric: agent for getting measurements using lua and snmp
 
 %files devel
 %defattr(-,root,root)
 %{_includedir}/*
-%{_libdir}/libfty_metric_snmp.so
-%{_libdir}/pkgconfig/libfty_metric_snmp.pc
+%{_libdir}/libzm_metric.so
+%{_libdir}/pkgconfig/libzm_metric.pc
 %{_mandir}/man3/*
 %{_mandir}/man7/*
 
@@ -115,20 +115,20 @@ find %{buildroot} -name '*.la' | xargs rm -f
 %files
 %defattr(-,root,root)
 %doc README.md
-%{_bindir}/fty-metric-snmp
-%{_mandir}/man1/fty-metric-snmp*
-%{_bindir}/fty-metric-snmp-rule
-%{_mandir}/man1/fty-metric-snmp-rule*
-%config(noreplace) %{_sysconfdir}/fty-metric-snmp/fty-metric-snmp.cfg
-/usr/lib/systemd/system/fty-metric-snmp.service
-%dir %{_sysconfdir}/fty-metric-snmp
+%{_bindir}/zm-metric
+%{_mandir}/man1/zm-metric*
+%{_bindir}/zm-metric-rule
+%{_mandir}/man1/zm-metric-rule*
+%config(noreplace) %{_sysconfdir}/zm-metric/zm-metric.cfg
+/usr/lib/systemd/system/zm-metric.service
+%dir %{_sysconfdir}/zm-metric
 %if 0%{?suse_version} > 1315
 %post
-%systemd_post fty-metric-snmp.service
+%systemd_post zm-metric.service
 %preun
-%systemd_preun fty-metric-snmp.service
+%systemd_preun zm-metric.service
 %postun
-%systemd_postun_with_restart fty-metric-snmp.service
+%systemd_postun_with_restart zm-metric.service
 %endif
 
 %changelog

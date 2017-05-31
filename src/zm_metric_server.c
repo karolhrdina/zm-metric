@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_metric_snmp_server - Main actor
+    zm_metric_server - Main actor
 
     Copyright (C) 2016 - 2017 Tomas Halman                                 
                                                                            
@@ -21,16 +21,16 @@
 
 /*
 @header
-    fty_metric_snmp_server - Main actor
+    zm_metric_server - Main actor
 @discuss
 @end
 */
 
-#include "fty_metric_snmp_classes.h"
+#include "zm_metric_classes.h"
 
 //  Structure of our class
 
-struct _fty_metric_snmp_server_t {
+struct _zm_metric_server_t {
     mlm_client_t *mlm;
     zlist_t *rules;
     zhash_t *host_actors;
@@ -40,12 +40,12 @@ struct _fty_metric_snmp_server_t {
 
 
 //  --------------------------------------------------------------------------
-//  Create a new fty_metric_snmp_server
+//  Create a new zm_metric_server
 
-fty_metric_snmp_server_t *
-fty_metric_snmp_server_new (void)
+zm_metric_server_t *
+zm_metric_server_new (void)
 {
-    fty_metric_snmp_server_t *self = (fty_metric_snmp_server_t *) zmalloc (sizeof (fty_metric_snmp_server_t));
+    zm_metric_server_t *self = (zm_metric_server_t *) zmalloc (sizeof (zm_metric_server_t));
     assert (self);
 
     self->mlm = mlm_client_new();
@@ -64,14 +64,14 @@ fty_metric_snmp_server_new (void)
 
 
 //  --------------------------------------------------------------------------
-//  Destroy the fty_metric_snmp_server
+//  Destroy the zm_metric_server
 
 void
-fty_metric_snmp_server_destroy (fty_metric_snmp_server_t **self_p)
+zm_metric_server_destroy (zm_metric_server_t **self_p)
 {
     assert (self_p);
     if (*self_p) {
-        fty_metric_snmp_server_t *self = *self_p;
+        zm_metric_server_t *self = *self_p;
         //  Free class properties here
         mlm_client_destroy (&self->mlm);
         zlist_destroy (&self->rules);
@@ -88,7 +88,7 @@ fty_metric_snmp_server_destroy (fty_metric_snmp_server_t **self_p)
 //  Add one json-encoded rule to list of rules
 
 void
-fty_metric_snmp_server_add_rule (fty_metric_snmp_server_t *self, const char *json)
+zm_metric_server_add_rule (zm_metric_server_t *self, const char *json)
 {
     if (!self || !json) return;
 
@@ -105,7 +105,7 @@ fty_metric_snmp_server_add_rule (fty_metric_snmp_server_t *self, const char *jso
 //  Load all rules in directory. Rule MUST have ".json" extension.
 
 void
-fty_metric_snmp_server_load_rules (fty_metric_snmp_server_t *self, const char *path)
+zm_metric_server_load_rules (zm_metric_server_t *self, const char *path)
 {
     if (!self || !path) return;
     char fullpath [PATH_MAX];
@@ -139,14 +139,14 @@ fty_metric_snmp_server_load_rules (fty_metric_snmp_server_t *self, const char *p
 //  This is decided by asset name (json "assets": []) or group (json "groups":[])
 
 int
-is_rule_for_this_asset (rule_t *rule, fty_proto_t *ftymsg)
+is_rule_for_this_asset (rule_t *rule, zm_proto_t *zmmsg)
 {
-    if (!rule || !ftymsg) return 0;
+    if (!rule || !zmmsg) return 0;
 
-    char *asset = (char *)fty_proto_name (ftymsg);
+    char *asset = (char *)zm_proto_name (zmmsg);
     if (zlist_exists (rule_assets(rule), asset)) return 1;
 
-    zhash_t *ext = fty_proto_ext (ftymsg);
+    zhash_t *ext = zm_proto_ext (zmmsg);
     zlist_t *keys = zhash_keys (ext);
     char *key = (char *)zlist_first (keys);
     while (key) {
@@ -162,9 +162,9 @@ is_rule_for_this_asset (rule_t *rule, fty_proto_t *ftymsg)
     }
     zlist_destroy (&keys);
 
-    const char *model = fty_proto_ext_string (ftymsg, "model", NULL);
+    const char *model = zm_proto_ext_string (zmmsg, "model", NULL);
     if (model && zlist_exists (rule_models (rule), (void *) model)) return 1;
-    model = fty_proto_ext_string (ftymsg, "device.part", NULL);
+    model = zm_proto_ext_string (zmmsg, "device.part", NULL);
     if (model && zlist_exists (rule_models (rule), (void *) model)) return 1;
 
     return 0;
@@ -174,14 +174,14 @@ is_rule_for_this_asset (rule_t *rule, fty_proto_t *ftymsg)
 //  Try SNMP credentials with this host and return first working.
 
 const snmp_credentials_t *
-fty_metric_snmp_server_detect_credentials (fty_metric_snmp_server_t *self, const char *ip)
+zm_metric_server_detect_credentials (zm_metric_server_t *self, const char *ip)
 {
     const snmp_credentials_t *cr = credentials_first (self->credentials);
     const char *startoid = ".1";
     char *oid, *value;
 
     while (cr) {
-        ftysnmp_getnext (
+        zmsnmp_getnext (
             ip,
             startoid,
             cr,
@@ -202,7 +202,7 @@ fty_metric_snmp_server_detect_credentials (fty_metric_snmp_server_t *self, const
 //  Update poller to have all existing sockets, pipes and actors
 
 void
-fty_metric_snmp_server_update_poller (fty_metric_snmp_server_t *self, zsock_t *pipe)
+zm_metric_server_update_poller (zm_metric_server_t *self, zsock_t *pipe)
 {
     if (!self || !pipe ) return;
     zpoller_destroy (&self -> poller);
@@ -219,22 +219,22 @@ fty_metric_snmp_server_update_poller (fty_metric_snmp_server_t *self, zsock_t *p
 //  When asset message comes, function creates new host_actor if not exists.
 
 zactor_t *
-fty_metric_snmp_server_asset (fty_metric_snmp_server_t *self, fty_proto_t *ftymsg, zsock_t *pipe)
+zm_metric_server_asset (zm_metric_server_t *self, zm_proto_t *zmmsg, zsock_t *pipe)
 {
-    if (!self || !ftymsg) return NULL;
+    if (!self || !zmmsg) return NULL;
 
-    const char *operation = fty_proto_operation (ftymsg);
-    const char *assetname = fty_proto_name (ftymsg);
+    const char *operation = zm_proto_operation (zmmsg);
+    const char *assetname = zm_proto_name (zmmsg);
 
     if (streq (operation, "delete")) {
         if (zhash_lookup (self->host_actors, assetname)) {
             zhash_delete (self->host_actors, assetname);
-            fty_metric_snmp_server_update_poller (self, pipe);
+            zm_metric_server_update_poller (self, pipe);
         }
         return NULL;
     }
     if (streq (operation, "inventory") && streq (mlm_client_sender (self -> mlm), "asset-autoupdate")) {
-        zhash_t *ext = fty_proto_ext (ftymsg);
+        zhash_t *ext = zm_proto_ext (zmmsg);
         const char *ip = (char *)zhash_lookup (ext, "ip.1");
         if (!ip) return NULL;
         zactor_t *host = (zactor_t *) zhash_lookup (self->host_actors, assetname);
@@ -243,7 +243,7 @@ fty_metric_snmp_server_asset (fty_metric_snmp_server_t *self, fty_proto_t *ftyms
         rule_t *rule = (rule_t *)zlist_first (self->rules);
         bool haverule = false;
         while (rule) {
-            if (is_rule_for_this_asset (rule, ftymsg)) {
+            if (is_rule_for_this_asset (rule, zmmsg)) {
                 haverule = true;
                 if (!host) {
                     zsys_debug ("deploying actor for %s", assetname);
@@ -252,7 +252,7 @@ fty_metric_snmp_server_asset (fty_metric_snmp_server_t *self, fty_proto_t *ftyms
                     zhash_insert (self->host_actors, assetname, host);
                     zhash_freefn (self->host_actors, assetname, host_actor_freefn);
                     zstr_sendx (host, "ASSETNAME", assetname, NULL);
-                    fty_metric_snmp_server_update_poller (self, pipe);
+                    zm_metric_server_update_poller (self, pipe);
                 }
                 zsys_debug ("function '%s' send to '%s' actor", rule_name (rule), assetname);
                 zstr_sendx (host, "LUA", rule_name (rule), rule_evaluation (rule), NULL);
@@ -263,12 +263,12 @@ fty_metric_snmp_server_asset (fty_metric_snmp_server_t *self, fty_proto_t *ftyms
             zsys_debug ("no rule for %s", assetname);
             if (host) {
                 zactor_destroy (&host);
-                fty_metric_snmp_server_update_poller (self, pipe);
+                zm_metric_server_update_poller (self, pipe);
             }
             return NULL;
         }
         zstr_sendx (host, "IP", ip, NULL);
-        const snmp_credentials_t *cr = fty_metric_snmp_server_detect_credentials (self, ip);
+        const snmp_credentials_t *cr = zm_metric_server_detect_credentials (self, ip);
         if (cr) {
             char *versionstr = zsys_sprintf ("%i", cr->version);
             zstr_sendx (host, "CREDENTIALS", versionstr, cr->community, NULL);
@@ -283,14 +283,14 @@ fty_metric_snmp_server_asset (fty_metric_snmp_server_t *self, fty_proto_t *ftyms
 }
 
 //  --------------------------------------------------------------------------
-//  Main fty_metric_snmp_server actor
+//  Main zm_metric_server actor
 void
-fty_metric_snmp_server_actor_main_loop (fty_metric_snmp_server_t *self, zsock_t *pipe)
+zm_metric_server_actor_main_loop (zm_metric_server_t *self, zsock_t *pipe)
 {
     if (!self || !pipe) return;
 
     int ttl = 60;
-    fty_metric_snmp_server_update_poller (self, pipe);
+    zm_metric_server_update_poller (self, pipe);
     zsock_signal (pipe, 0);
     while (!zsys_interrupted) {
         zsock_t *which = (zsock_t *) zpoller_wait (self -> poller, -1);
@@ -330,7 +330,7 @@ fty_metric_snmp_server_actor_main_loop (fty_metric_snmp_server_t *self, zsock_t 
                     else if (streq (cmd, "LOADRULES")) {
                         char *path = zmsg_popstr (msg);
                         assert (path);
-                        fty_metric_snmp_server_load_rules (self, path);
+                        zm_metric_server_load_rules (self, path);
                         zstr_free (&path);
                     }
                     else if (streq (cmd, "LOADCREDENTIALS")) {
@@ -348,7 +348,7 @@ fty_metric_snmp_server_actor_main_loop (fty_metric_snmp_server_t *self, zsock_t 
                     else if (streq (cmd, "RULE")) {
                         char *json = zmsg_popstr (msg);
                         assert (json);
-                        fty_metric_snmp_server_add_rule (self, json);
+                        zm_metric_server_add_rule (self, json);
                         zstr_free (&json);
                     }
                     else if (streq (cmd, "WAKEUP")) {
@@ -366,12 +366,12 @@ fty_metric_snmp_server_actor_main_loop (fty_metric_snmp_server_t *self, zsock_t 
         else if (which == mlm_client_msgpipe (self->mlm)) {
             // got malamute message, probably an asset
             zmsg_t *msg = mlm_client_recv (self->mlm);
-            if (msg && is_fty_proto (msg)) {
-                fty_proto_t *ftymsg = fty_proto_decode (&msg);
-                if (fty_proto_id (ftymsg) == FTY_PROTO_ASSET) {
-                    fty_metric_snmp_server_asset (self, ftymsg, pipe);
+            if (msg && is_zm_proto (msg)) {
+                zm_proto_t *zmmsg = zm_proto_decode (&msg);
+                if (zm_proto_id (zmmsg) == ZM_PROTO_ASSET) {
+                    zm_metric_server_asset (self, zmmsg, pipe);
                 }
-                fty_proto_destroy (&ftymsg);
+                zm_proto_destroy (&zmmsg);
             }
             zmsg_destroy (&msg);
         }
@@ -396,7 +396,7 @@ fty_metric_snmp_server_actor_main_loop (fty_metric_snmp_server_t *self, zsock_t 
                     if (desc && strlen (desc)) {
                         zhash_insert (aux, "description", desc);
                     }
-                    zmsg_t *metric = fty_proto_encode_metric (aux, time(NULL), ttl*freq, type, element, value, units);
+                    zmsg_t *metric = zm_proto_encode_metric (aux, time(NULL), ttl*freq, type, element, value, units);
                     mlm_client_send (self->mlm, topic, &metric);
                     zmsg_destroy (&metric);
                     zhash_destroy (&aux);
@@ -419,39 +419,39 @@ fty_metric_snmp_server_actor_main_loop (fty_metric_snmp_server_t *self, zsock_t 
 //  Zactor interface
 
 void
-fty_metric_snmp_server_actor(zsock_t *pipe, void *args)
+zm_metric_server_actor(zsock_t *pipe, void *args)
 {
-    fty_metric_snmp_server_t *self = fty_metric_snmp_server_new();
+    zm_metric_server_t *self = zm_metric_server_new();
     assert (self);
-    fty_metric_snmp_server_actor_main_loop (self, pipe);
-    fty_metric_snmp_server_destroy (&self);
+    zm_metric_server_actor_main_loop (self, pipe);
+    zm_metric_server_destroy (&self);
 }
 
 //  --------------------------------------------------------------------------
 //  Self test of this class
 
 void
-fty_metric_snmp_server_test (bool verbose)
+zm_metric_server_test (bool verbose)
 {
-    printf (" * fty_metric_snmp_server: ");
+    printf (" * zm_metric_server: ");
 
     //  @selftest
     //  Simple create/destroy test
-    fty_metric_snmp_server_t *self = fty_metric_snmp_server_new ();
+    zm_metric_server_t *self = zm_metric_server_new ();
     assert (self);
-    fty_metric_snmp_server_destroy (&self);
+    zm_metric_server_destroy (&self);
 
     // actor test
-    static const char *endpoint = "inproc://fty-metric-snmp";
+    static const char *endpoint = "inproc://zm-metric-snmp";
     zactor_t *malamute = zactor_new (mlm_server, (void*) "Malamute");
     zstr_sendx (malamute, "BIND", endpoint, NULL);
     if (verbose) zstr_send (malamute, "VERBOSE");
 
-    zactor_t *server = zactor_new (fty_metric_snmp_server_actor, NULL);
+    zactor_t *server = zactor_new (zm_metric_server_actor, NULL);
     assert (server);
     zstr_sendx (server, "BIND", endpoint, "me", NULL);
-    zstr_sendx (server, "PRODUCER", FTY_PROTO_STREAM_METRICS, NULL);
-    zstr_sendx (server, "CONSUMER", FTY_PROTO_STREAM_ASSETS, ".*", NULL);
+    zstr_sendx (server, "PRODUCER", ZM_PROTO_STREAM_METRICS, NULL);
+    zstr_sendx (server, "CONSUMER", ZM_PROTO_STREAM_ASSETS, ".*", NULL);
     zstr_sendx (server, "TTL", "100", NULL);
 
     static const char *rule =
@@ -471,13 +471,13 @@ fty_metric_snmp_server_test (bool verbose)
 
     mlm_client_t *asset = mlm_client_new ();
     mlm_client_connect (asset, endpoint, 5000, "asset-autoupdate");
-    mlm_client_set_producer (asset, FTY_PROTO_STREAM_ASSETS);
-    mlm_client_set_consumer (asset, FTY_PROTO_STREAM_METRICS, ".*");
+    mlm_client_set_producer (asset, ZM_PROTO_STREAM_ASSETS);
+    mlm_client_set_consumer (asset, ZM_PROTO_STREAM_METRICS, ".*");
 
     zhash_t *ext = zhash_new();
     zhash_autofree (ext);
     zhash_insert (ext, "ip.1", "127.0.0.1");
-    zmsg_t *assetmsg = fty_proto_encode_asset (
+    zmsg_t *assetmsg = zm_proto_encode_asset (
         NULL,
         "mydevice",
         "inventory",
@@ -491,7 +491,7 @@ fty_metric_snmp_server_test (bool verbose)
     zhash_autofree (ext);
     zhash_insert (ext, "ip.1", "127.0.0.1");
     zhash_insert (ext, "group.1", "mygroup");
-    assetmsg = fty_proto_encode_asset (
+    assetmsg = zm_proto_encode_asset (
         NULL,
         "somedev",
         "inventory",
@@ -509,17 +509,17 @@ fty_metric_snmp_server_test (bool verbose)
     {
         zmsg_t *received = mlm_client_recv (asset);
         assert (received);
-        fty_proto_t *metric = fty_proto_decode (&received);
-        fty_proto_print (metric);
-        fty_proto_destroy (&metric);
+        zm_proto_t *metric = zm_proto_decode (&received);
+        zm_proto_print (metric);
+        zm_proto_destroy (&metric);
         zmsg_destroy (&received);
     }
     {
         zmsg_t *received = mlm_client_recv (asset);
         assert (received);
-        fty_proto_t *metric = fty_proto_decode (&received);
-        fty_proto_print (metric);
-        fty_proto_destroy (&metric);
+        zm_proto_t *metric = zm_proto_decode (&received);
+        zm_proto_print (metric);
+        zm_proto_destroy (&metric);
         zmsg_destroy (&received);
     }
 

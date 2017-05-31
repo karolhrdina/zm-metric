@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_metric_snmp_server - Main actor
+    snmp - basic snmp functions
 
     Copyright (C) 2016 - 2017 Tomas Halman                                 
                                                                            
@@ -19,29 +19,33 @@
     =========================================================================
 */
 
-#ifndef FTY_METRIC_SNMP_SERVER_H_INCLUDED
-#define FTY_METRIC_SNMP_SERVER_H_INCLUDED
+#ifndef ZMSNMP_H_INCLUDED
+#define ZMSNMP_H_INCLUDED
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+//  structure for keeping SNMP credentials of any version
+#ifndef SNMP_CREDENTIALS_T_DEFINED
+typedef struct _snmp_credentials_t {
+    int version;
+    char *community;
+} snmp_credentials_t;
+#define SNMP_CREDENTIALS_T_DEFINED
+#endif
+
 //  @interface
-//  Create a new fty_metric_snmp_server
-FTY_METRIC_SNMP_EXPORT fty_metric_snmp_server_t *
-    fty_metric_snmp_server_new (void);
+//  snmp get function
+ZM_METRIC_PRIVATE char *
+    zmsnmp_get (const char* host, const char *oid, const snmp_credentials_t *credentials);
 
-//  Destroy the fty_metric_snmp_server
-FTY_METRIC_SNMP_EXPORT void
-    fty_metric_snmp_server_destroy (fty_metric_snmp_server_t **self_p);
+//  snmp getnext function
+ZM_METRIC_PRIVATE void
+    zmsnmp_getnext (const char* host, const char *oid, const snmp_credentials_t *credentials, char **resultoid, char **resultvalue);
 
-//  Self test of this class
-FTY_METRIC_SNMP_EXPORT void
-    fty_metric_snmp_server_test (bool verbose);
-
-//  Zactor interface of main actor
-FTY_METRIC_SNMP_EXPORT void
-    fty_metric_snmp_server_actor (zsock_t *pipe, void *args);
+ZM_METRIC_PRIVATE void
+    zmsnmp_test (bool verbose);
 
 //  @end
 

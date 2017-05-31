@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_metric_snmp_private_selftest.c - run private classes selftests
+    zm_metric_private_selftest.c - run private classes selftests
 
     Runs all private classes selftests.
 
@@ -27,7 +27,7 @@
     =========================================================================
 */
 
-#include "fty_metric_snmp_classes.h"
+#include "zm_metric_classes.h"
 
 
 //  -------------------------------------------------------------------------
@@ -35,14 +35,14 @@
 //
 
 void
-fty_metric_snmp_private_selftest (bool verbose)
+zm_metric_private_selftest (bool verbose)
 {
 // Tests for stable private classes:
     luasnmp_test (verbose);
     rule_test (verbose);
     vsjson_test (verbose);
     host_actor_test (verbose);
-    ftysnmp_test (verbose);
+    zmsnmp_test (verbose);
     credentials_test (verbose);
 }
 /*

@@ -28,14 +28,14 @@ extern "C" {
 
 //  @interface
 //  Create a new rule_tester
-FTY_METRIC_SNMP_EXPORT int
+ZM_METRIC_EXPORT int
     rule_tester (
         const char *file,
         int snmpversion,
         const char *community,
         const char *addr);
 
-FTY_METRIC_SNMP_EXPORT void
+ZM_METRIC_EXPORT void
     rule_tester_test (bool verbose);
 //  @end
 

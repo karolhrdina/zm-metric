@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_metric_snmp_selftest.c - run selftests
+    zm_metric_selftest.c - run selftests
 
     Runs all selftests.
 
@@ -27,7 +27,7 @@
     =========================================================================
 */
 
-#include "fty_metric_snmp_classes.h"
+#include "zm_metric_classes.h"
 
 typedef struct {
     const char *testname;
@@ -37,11 +37,11 @@ typedef struct {
 static test_item_t
 all_tests [] = {
 // Tests for stable public classes:
-    { "fty_metric_snmp_server", fty_metric_snmp_server_test },
+    { "zm_metric_server", zm_metric_server_test },
     { "rule_tester", rule_tester_test },
-#ifdef FTY_METRIC_SNMP_BUILD_DRAFT_API
-    { "private_classes", fty_metric_snmp_private_selftest },
-#endif // FTY_METRIC_SNMP_BUILD_DRAFT_API
+#ifdef ZM_METRIC_BUILD_DRAFT_API
+    { "private_classes", zm_metric_private_selftest },
+#endif // ZM_METRIC_BUILD_DRAFT_API
     {0, 0}          //  Sentinel
 };
 
@@ -69,7 +69,7 @@ static void
 test_runall (bool verbose)
 {
     test_item_t *item;
-    printf ("Running fty-metric-snmp selftests...\n");
+    printf ("Running zm-metric selftests...\n");
     for (item = all_tests; item->test; item++)
         item->test (verbose);
 
@@ -85,7 +85,7 @@ main (int argc, char **argv)
     for (argn = 1; argn < argc; argn++) {
         if (streq (argv [argn], "--help")
         ||  streq (argv [argn], "-h")) {
-            puts ("fty_metric_snmp_selftest.c [options] ...");
+            puts ("zm_metric_selftest.c [options] ...");
             puts ("  --verbose / -v         verbose test output");
             puts ("  --number / -n          report number of tests");
             puts ("  --list / -l            list all tests");
@@ -106,7 +106,7 @@ main (int argc, char **argv)
         if (streq (argv [argn], "--list")
         ||  streq (argv [argn], "-l")) {
             puts ("Available tests:");
-            puts ("    fty_metric_snmp_server\t\t- stable");
+            puts ("    zm_metric_server\t\t- stable");
             puts ("    rule_tester\t\t- stable");
             puts ("    private_classes\t- draft");
             return 0;
@@ -145,7 +145,7 @@ main (int argc, char **argv)
     #endif //
 
     if (test) {
-        printf ("Running fty-metric-snmp test '%s'...\n", test->testname);
+        printf ("Running zm-metric test '%s'...\n", test->testname);
         test->test (verbose);
     }
     else

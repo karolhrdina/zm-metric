@@ -19,7 +19,7 @@
     =========================================================================
 */
 
-#include "fty_metric_snmp_classes.h"
+#include "zm_metric_classes.h"
 
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-includes.h>
@@ -91,7 +91,7 @@ char *var_to_sring (const netsnmp_variable_list *variable)
 //  --------------------------------------------------------------------------
 //  snmp get version 1 and 2c
 
-char* ftysnmp_get_v12 (const char* host, const char *oid, const snmp_credentials_t* credentials)
+char* zmsnmp_get_v12 (const char* host, const char *oid, const snmp_credentials_t* credentials)
 {
     struct snmp_session session, *ss;
     struct snmp_pdu *pdu;
@@ -130,7 +130,7 @@ char* ftysnmp_get_v12 (const char* host, const char *oid, const snmp_credentials
 //  --------------------------------------------------------------------------
 //  snmp get-next version 1 and 2c
 
-void ftysnmp_getnext_v12 (const char* host, const char *oid, const snmp_credentials_t* credentials, char **resultoid, char **resultvalue)
+void zmsnmp_getnext_v12 (const char* host, const char *oid, const snmp_credentials_t* credentials, char **resultoid, char **resultvalue)
 {
     struct snmp_session session, *ss;
     struct snmp_pdu *pdu;
@@ -182,7 +182,7 @@ void ftysnmp_getnext_v12 (const char* host, const char *oid, const snmp_credenti
 //  --------------------------------------------------------------------------
 //  snmp get function
 
-char *ftysnmp_get (const char* host, const char *oid, const snmp_credentials_t *credentials)
+char *zmsnmp_get (const char* host, const char *oid, const snmp_credentials_t *credentials)
 {
     if (!host || !oid || !credentials) return NULL;
     if (credentials->version == 3) {
@@ -190,13 +190,13 @@ char *ftysnmp_get (const char* host, const char *oid, const snmp_credentials_t *
         // TODO: SNMPv3 support
         return NULL;
     }
-    return ftysnmp_get_v12 (host, oid, credentials);
+    return zmsnmp_get_v12 (host, oid, credentials);
 }
 
 //  --------------------------------------------------------------------------
 //  snmp getnext function
 
-void ftysnmp_getnext (const char* host, const char *oid, const snmp_credentials_t *credentials, char **resultoid, char **resultvalue)
+void zmsnmp_getnext (const char* host, const char *oid, const snmp_credentials_t *credentials, char **resultoid, char **resultvalue)
 {
     if (!host || !oid || !credentials || !resultoid || !resultvalue) {
         if (resultoid) *resultoid = NULL;
@@ -208,13 +208,13 @@ void ftysnmp_getnext (const char* host, const char *oid, const snmp_credentials_
         *resultoid = NULL;
         *resultvalue = NULL;
     }
-    ftysnmp_getnext_v12 (host, oid, credentials, resultoid, resultvalue);
+    zmsnmp_getnext_v12 (host, oid, credentials, resultoid, resultvalue);
 }
 
 //  --------------------------------------------------------------------------
 //  Self test of this class
 
-void ftysnmp_test (bool verbose)
+void zmsnmp_test (bool verbose)
 {
     //@ test is empty
 }

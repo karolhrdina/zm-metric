@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty-metric-snmp - generated layer of public API
+    zm-metric - generated layer of public API
 
     Copyright (C) 2016 - 2017 Tomas Halman                                 
                                                                            
@@ -24,69 +24,69 @@
     =========================================================================
 */
 
-#ifndef FTY_METRIC_SNMP_LIBRARY_H_INCLUDED
-#define FTY_METRIC_SNMP_LIBRARY_H_INCLUDED
+#ifndef ZM_METRIC_LIBRARY_H_INCLUDED
+#define ZM_METRIC_LIBRARY_H_INCLUDED
 
 //  Set up environment for the application
 
 //  External dependencies
 #include <czmq.h>
 #include <malamute.h>
-#include <ftyproto.h>
+#include <zmproto.h>
 #include <lua.h>
 #include <net-snmp/net-snmp-config.h>
 
-//  FTY_METRIC_SNMP version macros for compile-time API detection
-#define FTY_METRIC_SNMP_VERSION_MAJOR 1
-#define FTY_METRIC_SNMP_VERSION_MINOR 0
-#define FTY_METRIC_SNMP_VERSION_PATCH 0
+//  ZM_METRIC version macros for compile-time API detection
+#define ZM_METRIC_VERSION_MAJOR 1
+#define ZM_METRIC_VERSION_MINOR 0
+#define ZM_METRIC_VERSION_PATCH 0
 
-#define FTY_METRIC_SNMP_MAKE_VERSION(major, minor, patch) \
+#define ZM_METRIC_MAKE_VERSION(major, minor, patch) \
     ((major) * 10000 + (minor) * 100 + (patch))
-#define FTY_METRIC_SNMP_VERSION \
-    FTY_METRIC_SNMP_MAKE_VERSION(FTY_METRIC_SNMP_VERSION_MAJOR, FTY_METRIC_SNMP_VERSION_MINOR, FTY_METRIC_SNMP_VERSION_PATCH)
+#define ZM_METRIC_VERSION \
+    ZM_METRIC_MAKE_VERSION(ZM_METRIC_VERSION_MAJOR, ZM_METRIC_VERSION_MINOR, ZM_METRIC_VERSION_PATCH)
 
 #if defined (__WINDOWS__)
-#   if defined FTY_METRIC_SNMP_STATIC
-#       define FTY_METRIC_SNMP_EXPORT
-#   elif defined FTY_METRIC_SNMP_INTERNAL_BUILD
+#   if defined ZM_METRIC_STATIC
+#       define ZM_METRIC_EXPORT
+#   elif defined ZM_METRIC_INTERNAL_BUILD
 #       if defined DLL_EXPORT
-#           define FTY_METRIC_SNMP_EXPORT __declspec(dllexport)
+#           define ZM_METRIC_EXPORT __declspec(dllexport)
 #       else
-#           define FTY_METRIC_SNMP_EXPORT
+#           define ZM_METRIC_EXPORT
 #       endif
-#   elif defined FTY_METRIC_SNMP_EXPORTS
-#       define FTY_METRIC_SNMP_EXPORT __declspec(dllexport)
+#   elif defined ZM_METRIC_EXPORTS
+#       define ZM_METRIC_EXPORT __declspec(dllexport)
 #   else
-#       define FTY_METRIC_SNMP_EXPORT __declspec(dllimport)
+#       define ZM_METRIC_EXPORT __declspec(dllimport)
 #   endif
-#   define FTY_METRIC_SNMP_PRIVATE
+#   define ZM_METRIC_PRIVATE
 #else
-#   define FTY_METRIC_SNMP_EXPORT
+#   define ZM_METRIC_EXPORT
 #   if (defined __GNUC__ && __GNUC__ >= 4) || defined __INTEL_COMPILER
-#       define FTY_METRIC_SNMP_PRIVATE __attribute__ ((visibility ("hidden")))
+#       define ZM_METRIC_PRIVATE __attribute__ ((visibility ("hidden")))
 #   else
-#       define FTY_METRIC_SNMP_PRIVATE
+#       define ZM_METRIC_PRIVATE
 #   endif
 #endif
 
 //  Opaque class structures to allow forward references
 //  These classes are stable or legacy and built in all releases
-typedef struct _fty_metric_snmp_server_t fty_metric_snmp_server_t;
-#define FTY_METRIC_SNMP_SERVER_T_DEFINED
+typedef struct _zm_metric_server_t zm_metric_server_t;
+#define ZM_METRIC_SERVER_T_DEFINED
 typedef struct _rule_tester_t rule_tester_t;
 #define RULE_TESTER_T_DEFINED
 
 
 //  Public classes, each with its own header file
-#include "fty_metric_snmp_server.h"
+#include "zm_metric_server.h"
 #include "rule_tester.h"
 
-#ifdef FTY_METRIC_SNMP_BUILD_DRAFT_API
+#ifdef ZM_METRIC_BUILD_DRAFT_API
 //  Self test for private classes
-FTY_METRIC_SNMP_EXPORT void
-    fty_metric_snmp_private_selftest (bool verbose);
-#endif // FTY_METRIC_SNMP_BUILD_DRAFT_API
+ZM_METRIC_EXPORT void
+    zm_metric_private_selftest (bool verbose);
+#endif // ZM_METRIC_BUILD_DRAFT_API
 
 #endif
 /*

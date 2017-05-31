@@ -4,24 +4,24 @@ Name(7)
 
 NAME
 ----
-fty-metric-snmp - Overview of agent for getting measurements using LUA and SNMP
+zm-metric - Overview of agent for getting measurements using LUA and SNMP
 
 
 SYNOPSIS
 --------
 
-Project fty-metric-snmp aims to ... (short marketing pitch)
+Project zm-metric aims to ... (short marketing pitch)
 
 It delivers several programs with their respective man pages:
- fty-metric-snmp.1 fty-metric-snmp-rule.1
+ zm-metric.1 zm-metric-rule.1
 and public classes in a shared library:
- fty_metric_snmp_server.3 rule_tester.3
+ zm_metric_server.3 rule_tester.3
 
 Generally you can compile and link against it like this:
 ----
-#include <fty_metric_snmp.h>
+#include <zm_metric.h>
 
-cc ['flags'] 'files' -lfty_metric_snmp ['libraries']
+cc ['flags'] 'files' -lzm_metric ['libraries']
 ----
 
 
