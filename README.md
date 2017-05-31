@@ -1,6 +1,6 @@
-# fty-metric-snmp
+# zm-metric
 
-This 42ITy agent creates metrics and publish them on stream. Rules for creating
+This zmon agent creates metrics and publish them on stream. Rules for creating
 metrics are specified with json and lua. All rule files are loaded from one
 directory specified by command line parameter. File has to have .rule extension.
 
@@ -94,7 +94,7 @@ It is possible to re-use nagios plugins. The concept is simple. Run the plugin, 
 the output and exit code. Then produce metric named "nagios.something" with value of
 the exitcode and with description containing the plugin output.
 
-Other agent - fty-alert-flexible - checks for metrics called nagios.* and produces
+Other agent checks for metrics called nagios.* and produces
 alerts from them.
 
 See nagios-plugin-style.rule for example. Use io.popen to run plugin.
