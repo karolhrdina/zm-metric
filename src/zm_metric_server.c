@@ -435,7 +435,6 @@ void
 zm_metric_server_test (bool verbose)
 {
     printf (" * zm_metric_server: ");
-
     //  @selftest
     //  Simple create/destroy test
     zm_metric_server_t *self = zm_metric_server_new ();
@@ -525,7 +524,9 @@ zm_metric_server_test (bool verbose)
     }
 
     mlm_client_destroy (&asset);
+    zclock_sleep (500);
     zactor_destroy (&server);
+    zclock_sleep (500);
     zactor_destroy (&malamute);
     //  @end
     printf ("OK\n");
