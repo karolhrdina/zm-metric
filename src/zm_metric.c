@@ -1,21 +1,21 @@
 /*  =========================================================================
     zm_metric_snmp - agent for getting measurements using LUA and SNMP
 
-    Copyright (C) 2016 - 2017 Tomas Halman                                 
-                                                                           
-    This program is free software; you can redistribute it and/or modify   
-    it under the terms of the GNU General Public License as published by   
-    the Free Software Foundation; either version 2 of the License, or      
-    (at your option) any later version.                                    
-                                                                           
-    This program is distributed in the hope that it will be useful,        
-    but WITHOUT ANY WARRANTY; without even the implied warranty of         
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          
-    GNU General Public License for more details.                           
-                                                                           
+    Copyright (C) 2016 - 2017 Tomas Halman
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
     You should have received a copy of the GNU General Public License along
     with this program; if not, write to the Free Software Foundation, Inc.,
-    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.            
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
     =========================================================================
 */
 
@@ -26,7 +26,7 @@
 @end
 */
 
-#include "zm_metric_snmp_classes.h"
+#include "zm_metric_classes.h"
 
 static const char *ACTOR_NAME = "zm-metric-smtp";
 static const char *ENDPOINT = "ipc://@/malamute";
@@ -50,7 +50,7 @@ int main (int argc, char *argv [])
         if (argn < argc - 1) param = argv [argn+1];
 
         if (streq (argv [argn], "--help") ||  streq (argv [argn], "-h")) {
-            puts ("zm-metric-snmp [options] ...");
+            puts ("zm-metric [options] ...");
             puts ("  --verbose / -v         verbose test output");
             puts ("  --help / -h            this information");
             puts ("  --endpoint / -e        malamute endpoint [ipc://@/malamute]");
@@ -92,12 +92,12 @@ int main (int argc, char *argv [])
         }
     }
     if (verbose)
-        zsys_info ("zm_metric_snmp - started");
+        zsys_info ("zm-metric - started");
     zactor_t *server = zactor_new (zm_metric_server_actor, NULL);
     assert (server);
     zstr_sendx (server, "BIND", ENDPOINT, ACTOR_NAME, NULL);
-    zstr_sendx (server, "PRODUCER", ZM_PROTO_STREAM_METRICS, NULL);
-    zstr_sendx (server, "CONSUMER", ZM_PROTO_STREAM_ASSETS, ".*", NULL);
+    zstr_sendx (server, "PRODUCER", ZM_PROTO_METRIC_STREAM, NULL);
+    zstr_sendx (server, "CONSUMER", ZM_PROTO_DEVICE_STREAM, ".*", NULL);
     zstr_sendx (server, "LOADRULES", RULES_DIR, NULL);
     zstr_sendx (server, "LOADCREDENTIALS", SNMP_CONFIG_FILE, NULL);
     // ttl = 2.5 * POLLING
@@ -119,6 +119,6 @@ int main (int argc, char *argv [])
     zloop_destroy (&wakeup);
     zactor_destroy (&server);
     if (verbose)
-        zsys_info ("zm_metric_snmp - exited");
+        zsys_info ("zm-metric - exited");
     return 0;
 }

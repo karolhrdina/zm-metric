@@ -366,7 +366,8 @@ zm_metric_server_actor_main_loop (zm_metric_server_t *self, zsock_t *pipe)
         else if (which == mlm_client_msgpipe (self->mlm)) {
             // got malamute message, probably an asset
             zmsg_t *msg = mlm_client_recv (self->mlm);
-            if (msg && is_zm_proto (msg)) {
+            if (msg && streq (mlm_client_address (self->mlm), ZM_PROTO_DEVICE_STREAM)) {
+                // message from asset stream
                 zm_proto_t *zmmsg = zm_proto_decode (&msg);
                 if (zm_proto_id (zmmsg) == ZM_PROTO_DEVICE) {
                     zm_metric_server_asset (self, zmmsg, pipe);
@@ -396,7 +397,7 @@ zm_metric_server_actor_main_loop (zm_metric_server_t *self, zsock_t *pipe)
                     if (desc && strlen (desc)) {
                         zhash_insert (aux, "description", desc);
                     }
-                    zmsg_t *metric = zm_proto_encode_metric (aux, time(NULL), ttl*freq, type, element, value, units);
+                    zmsg_t *metric = zm_proto_encode_metric (element, time(NULL), ttl*freq, NULL, type, value, units);
                     mlm_client_send (self->mlm, topic, &metric);
                     zmsg_destroy (&metric);
                     zhash_destroy (&aux);
@@ -477,10 +478,10 @@ zm_metric_server_test (bool verbose)
     zhash_t *ext = zhash_new();
     zhash_autofree (ext);
     zhash_insert (ext, "ip.1", "127.0.0.1");
-    zmsg_t *assetmsg = zm_proto_encode_asset (
-        NULL,
+    zmsg_t *assetmsg = zm_proto_encode_device (
         "mydevice",
-        "inventory",
+        time (NULL),
+        3600,
         ext
     );
     zhash_destroy (&ext);
@@ -491,10 +492,10 @@ zm_metric_server_test (bool verbose)
     zhash_autofree (ext);
     zhash_insert (ext, "ip.1", "127.0.0.1");
     zhash_insert (ext, "group.1", "mygroup");
-    assetmsg = zm_proto_encode_asset (
-        NULL,
+    assetmsg = zm_proto_encode_device (
         "somedev",
-        "inventory",
+        time (NULL),
+        3600,
         ext
     );
     zhash_destroy (&ext);
