@@ -1,21 +1,21 @@
 /*  =========================================================================
     zm_metric_server - Main actor
 
-    Copyright (C) 2016 - 2017 Tomas Halman                                 
-                                                                           
-    This program is free software; you can redistribute it and/or modify   
-    it under the terms of the GNU General Public License as published by   
-    the Free Software Foundation; either version 2 of the License, or      
-    (at your option) any later version.                                    
-                                                                           
-    This program is distributed in the hope that it will be useful,        
-    but WITHOUT ANY WARRANTY; without even the implied warranty of         
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          
-    GNU General Public License for more details.                           
-                                                                           
+    Copyright (C) 2016 - 2017 Tomas Halman
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
     You should have received a copy of the GNU General Public License along
     with this program; if not, write to the Free Software Foundation, Inc.,
-    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.            
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
     =========================================================================
 */
 
@@ -143,7 +143,7 @@ is_rule_for_this_asset (rule_t *rule, zm_proto_t *zmmsg)
 {
     if (!rule || !zmmsg) return 0;
 
-    char *asset = (char *)zm_proto_name (zmmsg);
+    char *asset = (char *) zm_proto_device (zmmsg);
     if (zlist_exists (rule_assets(rule), asset)) return 1;
 
     zhash_t *ext = zm_proto_ext (zmmsg);
@@ -223,9 +223,10 @@ zm_metric_server_asset (zm_metric_server_t *self, zm_proto_t *zmmsg, zsock_t *pi
 {
     if (!self || !zmmsg) return NULL;
 
-    const char *operation = zm_proto_operation (zmmsg);
-    const char *assetname = zm_proto_name (zmmsg);
+    const char *assetname = zm_proto_device (zmmsg);
 
+    // TODO: clean it using device TTL
+    /*
     if (streq (operation, "delete")) {
         if (zhash_lookup (self->host_actors, assetname)) {
             zhash_delete (self->host_actors, assetname);
@@ -233,53 +234,52 @@ zm_metric_server_asset (zm_metric_server_t *self, zm_proto_t *zmmsg, zsock_t *pi
         }
         return NULL;
     }
-    if (streq (operation, "inventory") && streq (mlm_client_sender (self -> mlm), "asset-autoupdate")) {
-        zhash_t *ext = zm_proto_ext (zmmsg);
-        const char *ip = (char *)zhash_lookup (ext, "ip.1");
-        if (!ip) return NULL;
-        zactor_t *host = (zactor_t *) zhash_lookup (self->host_actors, assetname);
-        if (host) zstr_send (host, "DROPLUA");
+    */
 
-        rule_t *rule = (rule_t *)zlist_first (self->rules);
-        bool haverule = false;
-        while (rule) {
-            if (is_rule_for_this_asset (rule, zmmsg)) {
-                haverule = true;
-                if (!host) {
-                    zsys_debug ("deploying actor for %s", assetname);
-                    host = zactor_new(host_actor, NULL);
-                    assert (host);
-                    zhash_insert (self->host_actors, assetname, host);
-                    zhash_freefn (self->host_actors, assetname, host_actor_freefn);
-                    zstr_sendx (host, "ASSETNAME", assetname, NULL);
-                    zm_metric_server_update_poller (self, pipe);
-                }
-                zsys_debug ("function '%s' send to '%s' actor", rule_name (rule), assetname);
-                zstr_sendx (host, "LUA", rule_name (rule), rule_evaluation (rule), NULL);
-            }
-            rule = (rule_t *)zlist_next (self->rules);
-        }
-        if (!haverule) {
-            zsys_debug ("no rule for %s", assetname);
-            if (host) {
-                zactor_destroy (&host);
+    zhash_t *ext = zm_proto_ext (zmmsg);
+    const char *ip = (char *)zhash_lookup (ext, "ip.1");
+    if (!ip) return NULL;
+    zactor_t *host = (zactor_t *) zhash_lookup (self->host_actors, assetname);
+    if (host) zstr_send (host, "DROPLUA");
+
+    rule_t *rule = (rule_t *)zlist_first (self->rules);
+    bool haverule = false;
+    while (rule) {
+        if (is_rule_for_this_asset (rule, zmmsg)) {
+            haverule = true;
+            if (!host) {
+                zsys_debug ("deploying actor for %s", assetname);
+                host = zactor_new(host_actor, NULL);
+                assert (host);
+                zhash_insert (self->host_actors, assetname, host);
+                zhash_freefn (self->host_actors, assetname, host_actor_freefn);
+                zstr_sendx (host, "ASSETNAME", assetname, NULL);
                 zm_metric_server_update_poller (self, pipe);
             }
-            return NULL;
+            zsys_debug ("function '%s' send to '%s' actor", rule_name (rule), assetname);
+            zstr_sendx (host, "LUA", rule_name (rule), rule_evaluation (rule), NULL);
         }
-        zstr_sendx (host, "IP", ip, NULL);
-        const snmp_credentials_t *cr = zm_metric_server_detect_credentials (self, ip);
-        if (cr) {
-            char *versionstr = zsys_sprintf ("%i", cr->version);
-            zstr_sendx (host, "CREDENTIALS", versionstr, cr->community, NULL);
-            zstr_free (&versionstr);
-        } else {
-            zsys_error ("Can't detect SNMP credentials for %s", assetname);
-            zstr_sendx (host, "CREDENTIALS", "0", "", NULL);
-        }
-        return host;
+        rule = (rule_t *)zlist_next (self->rules);
     }
-    return NULL;
+    if (!haverule) {
+        zsys_debug ("no rule for %s", assetname);
+        if (host) {
+            zactor_destroy (&host);
+            zm_metric_server_update_poller (self, pipe);
+        }
+        return NULL;
+    }
+    zstr_sendx (host, "IP", ip, NULL);
+    const snmp_credentials_t *cr = zm_metric_server_detect_credentials (self, ip);
+    if (cr) {
+        char *versionstr = zsys_sprintf ("%i", cr->version);
+        zstr_sendx (host, "CREDENTIALS", versionstr, cr->community, NULL);
+        zstr_free (&versionstr);
+    } else {
+        zsys_error ("Can't detect SNMP credentials for %s", assetname);
+        zstr_sendx (host, "CREDENTIALS", "0", "", NULL);
+    }
+    return host;
 }
 
 //  --------------------------------------------------------------------------
@@ -368,7 +368,7 @@ zm_metric_server_actor_main_loop (zm_metric_server_t *self, zsock_t *pipe)
             zmsg_t *msg = mlm_client_recv (self->mlm);
             if (msg && is_zm_proto (msg)) {
                 zm_proto_t *zmmsg = zm_proto_decode (&msg);
-                if (zm_proto_id (zmmsg) == ZM_PROTO_ASSET) {
+                if (zm_proto_id (zmmsg) == ZM_PROTO_DEVICE) {
                     zm_metric_server_asset (self, zmmsg, pipe);
                 }
                 zm_proto_destroy (&zmmsg);
@@ -450,8 +450,8 @@ zm_metric_server_test (bool verbose)
     zactor_t *server = zactor_new (zm_metric_server_actor, NULL);
     assert (server);
     zstr_sendx (server, "BIND", endpoint, "me", NULL);
-    zstr_sendx (server, "PRODUCER", ZM_PROTO_STREAM_METRICS, NULL);
-    zstr_sendx (server, "CONSUMER", ZM_PROTO_STREAM_ASSETS, ".*", NULL);
+    zstr_sendx (server, "PRODUCER", ZM_PROTO_METRIC_STREAM, NULL);
+    zstr_sendx (server, "CONSUMER", ZM_PROTO_DEVICE_STREAM, ".*", NULL);
     zstr_sendx (server, "TTL", "100", NULL);
 
     static const char *rule =
@@ -471,8 +471,8 @@ zm_metric_server_test (bool verbose)
 
     mlm_client_t *asset = mlm_client_new ();
     mlm_client_connect (asset, endpoint, 5000, "asset-autoupdate");
-    mlm_client_set_producer (asset, ZM_PROTO_STREAM_ASSETS);
-    mlm_client_set_consumer (asset, ZM_PROTO_STREAM_METRICS, ".*");
+    mlm_client_set_producer (asset, ZM_PROTO_DEVICE_STREAM);
+    mlm_client_set_consumer (asset, ZM_PROTO_METRIC_STREAM, ".*");
 
     zhash_t *ext = zhash_new();
     zhash_autofree (ext);
