@@ -397,7 +397,7 @@ zm_metric_server_actor_main_loop (zm_metric_server_t *self, zsock_t *pipe)
                     if (desc && strlen (desc)) {
                         zhash_insert (aux, "description", desc);
                     }
-                    zmsg_t *metric = zm_proto_encode_metric (element, time(NULL), ttl*freq, NULL, type, value, units);
+                    zmsg_t *metric = zm_proto_encode_metric_v1 (element, time(NULL), ttl*freq, NULL, type, value, units);
                     mlm_client_send (self->mlm, topic, &metric);
                     zmsg_destroy (&metric);
                     zhash_destroy (&aux);
@@ -477,7 +477,7 @@ zm_metric_server_test (bool verbose)
     zhash_t *ext = zhash_new();
     zhash_autofree (ext);
     zhash_insert (ext, "ip.1", "127.0.0.1");
-    zmsg_t *assetmsg = zm_proto_encode_device (
+    zmsg_t *assetmsg = zm_proto_encode_device_v1 (
         "mydevice",
         time (NULL),
         3600,
@@ -491,7 +491,7 @@ zm_metric_server_test (bool verbose)
     zhash_autofree (ext);
     zhash_insert (ext, "ip.1", "127.0.0.1");
     zhash_insert (ext, "group.1", "mygroup");
-    assetmsg = zm_proto_encode_device (
+    assetmsg = zm_proto_encode_device_v1 (
         "somedev",
         time (NULL),
         3600,
